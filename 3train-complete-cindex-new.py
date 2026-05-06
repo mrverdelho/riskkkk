@@ -20,11 +20,8 @@ import seaborn as sns
 import umap
 from sklearn.metrics import silhouette_score
 from sklearn.neighbors import KernelDensity
+from models3_complete_cindex_new import GraphDataset_featsnorml_hetero, compute_mean_std_hetero, test_model_on_loader,verify_post_normalization, reset_weights, model_init, HeteroGAT_survival,GraphDataset_featsnorml,plot_attention_histograms,compute_mean_std,initialize_fold_results, initialize_repeat_results,store_fold_data, GAT_survival,prepare_fold_data,setup_data_loaders,get_class_distribution, train_accum_graddient_new_sigmoid_threshold,test_model_on_loader,verify_post_normalization,  GraphDataset_featsnorml_hyperinc, compute_mean_std_hyperinc, HyperGCN_survival, HyperGAT_survival, PatientWSIPackDataset_featsnorml, AgglomerativeGCN_Survival, AgglomerativeGAT_Survival,plot_roc_three_panels,  collect_activations_for_umap, plot_umap_per_layer_dual_and_metrics,save_layer_acts_for_fold, aggregate_umap_across_folds, build_renyi_patch_selector as _build_renyi_patch_selector_impl, summarize_patch_selector_usage, run_baseline_lda
 
-try:
-    from models3_complete_cindex_new import GraphDataset_featsnorml_hetero, compute_mean_std_hetero, test_model_on_loader,verify_post_normalization, reset_weights, model_init, HeteroGAT_survival,GraphDataset_featsnorml,plot_attention_histograms,compute_mean_std,initialize_fold_results, initialize_repeat_results,store_fold_data, GAT_survival,prepare_fold_data,setup_data_loaders,get_class_distribution, train_accum_graddient_new_sigmoid_threshold,test_model_on_loader,verify_post_normalization,  GraphDataset_featsnorml_hyperinc, compute_mean_std_hyperinc, HyperGCN_survival, HyperGAT_survival, PatientWSIPackDataset_featsnorml, AgglomerativeGCN_Survival, AgglomerativeGAT_Survival,plot_roc_three_panels,  collect_activations_for_umap, plot_umap_per_layer_dual_and_metrics,save_layer_acts_for_fold, aggregate_umap_across_folds, build_renyi_patch_selector as _build_renyi_patch_selector_impl, summarize_patch_selector_usage, run_baseline_lda
-except ImportError:
-    from models3_gnn_jupiter_survival_orig_heteroconv_roc_umap_thr_final_final_lda import GraphDataset_featsnorml_hetero, compute_mean_std_hetero, test_model_on_loader,verify_post_normalization, reset_weights, model_init, HeteroGAT_survival,GraphDataset_featsnorml,plot_attention_histograms,compute_mean_std,initialize_fold_results, initialize_repeat_results,store_fold_data, GAT_survival,prepare_fold_data,setup_data_loaders,get_class_distribution, train_accum_graddient_new_sigmoid_threshold,test_model_on_loader,verify_post_normalization,  GraphDataset_featsnorml_hyperinc, compute_mean_std_hyperinc, HyperGCN_survival, HyperGAT_survival, PatientWSIPackDataset_featsnorml, AgglomerativeGCN_Survival, AgglomerativeGAT_Survival,plot_roc_three_panels,  collect_activations_for_umap, plot_umap_per_layer_dual_and_metrics,save_layer_acts_for_fold, aggregate_umap_across_folds, build_renyi_patch_selector as _build_renyi_patch_selector_impl, summarize_patch_selector_usage, run_baseline_lda
 
 _RENYI_SELECTOR_PARAMS = inspect.signature(_build_renyi_patch_selector_impl).parameters
 _RENYI_SELECTOR_SUPPORTS_PERCENTILE = "percentile" in _RENYI_SELECTOR_PARAMS
@@ -64,7 +61,7 @@ torch.backends.cudnn.benchmark = False
 # Device selection
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 print('\nUsing device:', device)
-auxxx = ['gcn']#,'survival''gat' ]#,'GraphSAGE_max']#, 'AdaptiveGraphSAGE','AdaptiveGraphSAGE_max'] #'survival','gat','gat','gat','GraphSAGE', 'AdaptiveGraphSAGE', 'GraphSAGE',
+auxxx = ['gat']#,'survival''gat' ]#,'GraphSAGE_max']#, 'AdaptiveGraphSAGE','AdaptiveGraphSAGE_max'] #'survival','gat','gat','gat','GraphSAGE', 'AdaptiveGraphSAGE', 'GraphSAGE',
 #'AdaptiveGraphSAGE'
 
 for runn in range(0,6):
@@ -84,7 +81,7 @@ for runn in range(0,6):
     dataset= 'lung' #'cptac' "lung
     task = 'risk'  # '12months' (classification) or 'risk' (Cox PH survival)
                                                                                                 #CPTAC           #LUNG
-    all_t= 'combined_20_all_files' #combined_5_all_files                                     #yes   yes         #YES
+    all_t= 'hyper_combined_5_all_files' #combined_5_all_files                                     #yes   yes         #YES
                            #combined_20_all_files                                                  #yes   yes         #YES
                            #combined_10_all_files - combined 1 grpah per patien                    #yes  yes          #YES
                            #combined_100_all_files                                                 #yes 
@@ -562,49 +559,49 @@ for runn in range(0,6):
            csv_paths = {
             # csvs/updated_allpatients_combined_allpatients_data_knn_lung.csv
             'combined_10_all_files': {
-                'all': 'csvs/up_lung_cptac_tcga_merged_cox_vital12_knn.csv'                       
+                'all': 'csvs/up_lung_cptac_tcga_merged_cox_vital12_knn_existing.csv'                       
             },
             
             'combined_20_all_files': {
-                'all': 'csvs/up_lung_cptac_tcga_merged_cox_vital12_knn.csv'                       
+                'all': 'csvs/up_lung_cptac_tcga_merged_cox_vital12_knn_existing.csv'                       
             },
             
             'combined_5_all_files': {
-                'all': 'csvs/up_lung_cptac_tcga_merged_cox_vital12_knn.csv'                       
+                'all': 'csvs/up_lung_cptac_tcga_merged_cox_vital12_knn_existing.csv'                       
             },
     
             'combined_100_all_files': {
-                'all': 'csvs/up_lung_cptac_tcga_merged_cox_vital12_knn.csv'                       
+                'all': 'csvs/up_lung_cptac_tcga_merged_cox_vital12_knn_existing.csv'                       
             },
     
              'hetero_combined_5_all_files':{
-                 'all': 'csvs/up_lung_cptac_tcga_merged_cox_vital12_knn.csv'   
+                 'all': 'csvs/up_lung_cptac_tcga_merged_cox_vital12_knn_existing.csv'   
             },
             
              'hetero_combined_10_all_files':{
-                 'all': 'csvs/up_lung_cptac_tcga_merged_cox_vital12_knn.csv'   
+                 'all': 'csvs/up_lung_cptac_tcga_merged_cox_vital12_knn_existing.csv'   
             },
              
             'hetero_combined_20_all_files':{
-                 'all': 'csvs/up_lung_cptac_tcga_merged_cox_vital12_knn.csv'   
+                 'all': 'csvs/up_lung_cptac_tcga_merged_cox_vital12_knn_existing.csv'   
             },
             'hetero_combined_100_all_files':{
-                 'all': 'csvs/up_lung_cptac_tcga_merged_cox_vital12_knn.csv'   
+                 'all': 'csvs/up_lung_cptac_tcga_merged_cox_vital12_knn_existing.csv'   
             },
 
             'hyper_combined_5_all_files':{
-                 'all': 'csvs/up_lung_cptac_tcga_merged_cox_vital12_knn.csv'   
+                 'all': 'csvs/up_lung_cptac_tcga_merged_cox_vital12_knn_existing.csv'   
             },
             
              'hyper_combined_10_all_files':{
-                 'all': 'csvs/up_lung_cptac_tcga_merged_cox_vital12_knn.csv'   
+                 'all': 'csvs/up_lung_cptac_tcga_merged_cox_vital12_knn_existing.csv'   
             },
              
             'hyper_combined_20_all_files':{
-                 'all': 'csvs/up_lung_cptac_tcga_merged_cox_vital12_knn.csv'   
+                 'all': 'csvs/up_lung_cptac_tcga_merged_cox_vital12_knn_existing.csv'   
             },
             'hyper_combined_100_all_files':{
-                 'all': 'csvs/up_lung_cptac_tcga_merged_cox_vital12_knn.csv'   
+                 'all': 'csvs/up_lung_cptac_tcga_merged_cox_vital12_knn_existing.csv'   
             },
 
             #csvs/updated_all_filesencoded_three_updated_with_filenames_lung_FULL.csv
