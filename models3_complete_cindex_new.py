@@ -17,7 +17,7 @@ from torch.utils.tensorboard import SummaryWriter
 from sklearn.metrics import classification_report, balanced_accuracy_score
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 #import warnings
-from sklearn.metrics import confusion_matrixgatconv
+#from sklearn.metrics import confusion_matrixgatconv
 from torch.nn import Sequential, Linear, ReLU
 #from torch_geometric.data import Batch
 #from torch.utils.data import WeightedRandomSampler
@@ -1621,6 +1621,15 @@ def setup_data_loaders(all_t,train_df, val_df, test_df, mean_features, std_dev, 
     # =========================
     # NEW: agglomerative mode
     # =========================
+    # =========================
+    # Define label column based on task
+    # =========================
+    if task == "12months":
+        label_col = "vital_status_12"
+    elif task == "risk":
+        label_col = "event"
+    else:
+        raise ValueError(f"Unknown task: {task}")
     if 'aglomerative' in all_t:
         dropout_rate = 0.3
         root = f"{dataset}_univ2_patchgraphadj_selfloop"  # per-WSI graphs
